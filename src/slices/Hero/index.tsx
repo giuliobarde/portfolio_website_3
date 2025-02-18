@@ -18,7 +18,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
   const component = useRef(null);
 
   useEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       const tl = gsap.timeline();
 
       tl.fromTo(
