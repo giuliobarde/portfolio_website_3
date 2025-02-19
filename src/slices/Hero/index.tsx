@@ -7,6 +7,7 @@ import { SliceComponentProps } from "@prismicio/react";
 import { gsap } from "gsap";
 //import Bounded from "@/components/Bounded";
 import Shapes from "./Shapes"
+import Bounded from "@/components/Bounded";
 
 /**
  * Props for `Hero`.
@@ -86,7 +87,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
   };
 
   return (
-    <section
+    <Bounded
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       ref={component}
@@ -125,7 +126,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
           </span>
         </div>
       </div>
-    </section>
+    </Bounded>
   );
 };
 
