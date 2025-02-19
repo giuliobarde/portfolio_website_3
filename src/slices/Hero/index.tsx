@@ -5,7 +5,7 @@ import { FC } from "react";
 import { Content, KeyTextField } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { gsap } from "gsap";
-import Bounded from "@/app/components/Bounded";
+//import Bounded from "@/components/Bounded";
 import Shapes from "./Shapes"
 
 /**
@@ -86,7 +86,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
   };
 
   return (
-    <Bounded
+    <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       ref={component}
@@ -125,7 +125,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
           </span>
         </div>
       </div>
-    </Bounded>
+    </section>
   );
 };
 

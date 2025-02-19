@@ -19,7 +19,8 @@ export default function Shapes(){
                     fov:30, 
                     near:1, 
                     far:40
-                }}>
+                }}
+            >
             <Suspense fallback={null}>
                 <Geometries />
                 <ContactShadows
@@ -81,12 +82,15 @@ function Geometry({r, position, geometry, materials}){
         mesh.material = getRandomMaterial();
     }
 
-    const handlePointerOver = ()=>{
-        document.body.cursor = "pointer"
-    }
-    const handlePointerOut = ()=>{
-        document.body.cursor = "default"
-    }
+    const handlePointerOver = () => {
+        document.body.style.cursor = "pointer";
+    };
+    
+    const handlePointerOut = () => {
+        document.body.style.cursor = "default";
+    };
+    
+    
 
     return (
         <group position={position} ref={meshRef}>
