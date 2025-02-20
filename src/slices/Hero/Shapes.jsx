@@ -44,7 +44,7 @@ function Geometries() {
             geometry: new THREE.IcosahedronGeometry(3), // Gem
         },
         {
-            position: [2,1,1],
+            position: [1.6,1.6,-4],
             r: 0.5,
             geometry: new THREE.TorusKnotGeometry(1), // Rope
         },
