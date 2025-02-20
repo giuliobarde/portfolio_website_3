@@ -22,6 +22,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "tag-cloud": "^2.0.2",
+    "tagcloud": "^1.1.0-1",
+    "TagCloud": "^2.5.0",
     "three": "^0.173.0"
   },
   "devDependencies": {
