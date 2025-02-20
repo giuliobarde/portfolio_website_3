@@ -13,7 +13,7 @@ const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
       <div className="grid gap-x-8 gap-y-6 md:grid-cols-2 items-center">
         {/* Left Column - Heading, Text */}
         <div className="flex flex-col space-y-6">
-          <Heading as="h2" size="xl">
+          <Heading as="h2" size="lg">
             {slice.primary.heading}
           </Heading>
           <div className="prose prose-xl prose-slate prose-invert">

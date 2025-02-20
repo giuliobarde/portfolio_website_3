@@ -35,6 +35,9 @@ const WordSphere: React.FC = () => {
       "Huggingface",
       "Jupyter Notebook",
       "R",
+      "ThreeJS",
+      "TailWindCSS",
+      "GSAP",
     ];
 
     const options: TagCloudOptions = {
