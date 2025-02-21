@@ -389,6 +389,21 @@ type HeroSliceVariation = HeroSliceDefault;
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
+ * Item in *TechList → Default → Primary → Tech Skill*
+ */
+export interface TechListSliceDefaultPrimaryTechSkillItem {
+  /**
+   * Skill field in *TechList → Default → Primary → Tech Skill*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech_list.default.primary.tech_skill[].skill
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  skill: prismic.KeyTextField;
+}
+
+/**
  * Primary content in *TechList → Default → Primary*
  */
 export interface TechListSliceDefaultPrimary {
@@ -411,6 +426,18 @@ export interface TechListSliceDefaultPrimary {
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   tech_description: prismic.RichTextField;
+
+  /**
+   * Tech Skill field in *TechList → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech_list.default.primary.tech_skill[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  tech_skill: prismic.GroupField<
+    Simplify<TechListSliceDefaultPrimaryTechSkillItem>
+  >;
 }
 
 /**
@@ -480,6 +507,7 @@ declare module "@prismicio/client" {
       HeroSliceVariation,
       HeroSliceDefault,
       TechListSlice,
+      TechListSliceDefaultPrimaryTechSkillItem,
       TechListSliceDefaultPrimary,
       TechListSliceVariation,
       TechListSliceDefault,

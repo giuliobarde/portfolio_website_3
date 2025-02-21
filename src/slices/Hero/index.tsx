@@ -124,6 +124,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
             {slice.primary.tag_line}
           </span>
         </div>
+        <div className="h-[20vh]"></div>
       </div>
     </Bounded>
   );

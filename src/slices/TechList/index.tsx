@@ -8,6 +8,9 @@ import { PrismicRichText } from "@prismicio/react";
 export type TechListSliceProps = Content.TechListSlice;
 
 const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
+  const wordList = slice.primary.tech_skill
+  .map((item) => item.skill)
+  .filter((skill): skill is string => typeof skill === "string")
   return (
     <Bounded>
       <div className="grid gap-x-8 gap-y-6 md:grid-cols-2 items-center">
@@ -23,7 +26,7 @@ const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
 
         {/* Right Column - Sphere */}
         <div style={{ marginTop: "2rem" }}>
-        <WordSphere />
+        <WordSphere wordList={wordList}/>
       </div>
       </div>
     </Bounded>

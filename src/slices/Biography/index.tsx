@@ -42,6 +42,7 @@ const Biography: FC<BiographyProps> = ({ slice }) => {
             label={slice.primary.button_text}
           />
         </div>
+        <div className="h-[20vh]"></div>
       </div>
     </Bounded>
   );
