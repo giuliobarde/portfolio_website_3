@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Content } from "@prismicio/client";
 import WordSphere from "@/components/WordSphere";
 import Bounded from "@/components/Bounded";
@@ -9,8 +11,48 @@ export type TechListSliceProps = Content.TechListSlice;
 
 const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
   const wordList = slice.primary.tech_skill
-  .map((item) => item.skill)
-  .filter((skill): skill is string => typeof skill === "string")
+    .map((item) => item.skill)
+    .filter((skill): skill is string => typeof skill === "string");
+
+  // Default size (avoids SSR-client mismatch)
+  const [sphereSize, setSphereSize] = useState<number>(300);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    const updateSphereSize = () => {
+      const width = window.innerWidth;
+      console.log("Window width:", width); // Debugging log
+
+      let newSize: number;
+      if (width >= 1320) {
+        newSize = 350;
+      } else if (width >= 1040 && width < 1320) {
+        newSize = 265;
+      } else if (width >= 768 && width < 1040) {
+        newSize = 190;
+      } else if (width >= 570 && width < 768) {
+        newSize = 280;
+      } else {
+        newSize = 180;
+      }
+
+      setSphereSize((prevSize) => {
+        if (prevSize !== newSize) {
+          setKey((prevKey) => prevKey + 1); // Force re-render
+          return newSize;
+        }
+        return prevSize;
+      });
+    };
+
+    updateSphereSize(); // Update after mount
+    window.addEventListener("resize", updateSphereSize);
+
+    return () => {
+      window.removeEventListener("resize", updateSphereSize);
+    };
+  }, []);
+
   return (
     <Bounded>
       <div className="grid gap-x-8 gap-y-6 md:grid-cols-2 items-center">
@@ -20,14 +62,17 @@ const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
             {slice.primary.heading}
           </Heading>
           <div className="prose prose-xl prose-slate prose-invert">
-            <PrismicRichText field={slice.primary.tech_description}/>
+            <PrismicRichText field={slice.primary.tech_description} />
           </div>
         </div>
 
-        {/* Right Column - Sphere */}
-        <div style={{ marginTop: "2rem" }}>
-        <WordSphere wordList={wordList}/>
-      </div>
+        {/* Right Column - Centered Sphere */}
+        <div
+          className="flex justify-center items-center"
+          style={{ marginTop: "2rem", height: `${sphereSize + 20}px` }} // Ensures vertical centering
+        >
+          <WordSphere key={key} wordList={wordList} sphereSize={sphereSize} />
+        </div>
       </div>
     </Bounded>
   );
