@@ -21,19 +21,12 @@ const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
   useEffect(() => {
     const updateSphereSize = () => {
       const width = window.innerWidth;
-      console.log("Window width:", width); // Debugging log
 
       let newSize: number;
-      if (width >= 1320) {
-        newSize = 350;
-      } else if (width >= 1040 && width < 1320) {
-        newSize = 265;
-      } else if (width >= 768 && width < 1040) {
-        newSize = 190;
-      } else if (width >= 570 && width < 768) {
-        newSize = 280;
+      if (width >= 768) {
+        newSize = width / 4;
       } else {
-        newSize = 180;
+        newSize = width / 2.3;
       }
 
       setSphereSize((prevSize) => {
@@ -68,11 +61,12 @@ const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
 
         {/* Right Column - Centered Sphere */}
         <div
-          className="flex justify-center items-center"
+          className="flex justify-center items-center mt-4 md:mt-0"
           style={{ marginTop: "2rem", height: `${sphereSize + 20}px` }} // Ensures vertical centering
         >
           <WordSphere key={key} wordList={wordList} sphereSize={sphereSize} />
         </div>
+        <div className="h-[20vh]"></div>
       </div>
     </Bounded>
   );

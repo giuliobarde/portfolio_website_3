@@ -27,7 +27,7 @@ const WordSphere: React.FC<wordSphereProps> = ({ wordList, sphereSize }) => {
     TagCloud([container], wordList, options);
   }, []);
 
-  return <span className="tagcloud" />;
+  return <span className="tagcloud prose prose-slate prose-invert font-bold" />;
 };
 
 export default WordSphere;
