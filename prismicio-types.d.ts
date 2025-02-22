@@ -414,6 +414,16 @@ export type AllDocumentTypes =
  */
 export interface BiographySliceDefaultPrimary {
   /**
+   * Section ID field in *Biography → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: biography.default.primary.section_id
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  section_id: prismic.KeyTextField;
+
+  /**
    * Heading field in *Biography → Default → Primary*
    *
    * - **Field Type**: Text
@@ -648,6 +658,16 @@ export interface ProjectsSliceDefaultPrimaryProjectItem {
  */
 export interface ProjectsSliceDefaultPrimary {
   /**
+   * Section ID field in *Projects → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: projects.default.primary.section_id
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  section_id: prismic.KeyTextField;
+
+  /**
    * Heading field in *Projects → Default → Primary*
    *
    * - **Field Type**: Text
@@ -727,6 +747,16 @@ export interface TechListSliceDefaultPrimaryTechSkillItem {
  * Primary content in *TechList → Default → Primary*
  */
 export interface TechListSliceDefaultPrimary {
+  /**
+   * Section ID field in *TechList → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: tech_list.default.primary.section_id
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  section_id: prismic.KeyTextField;
+
   /**
    * Heading field in *TechList → Default → Primary*
    *

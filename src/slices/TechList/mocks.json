@@ -36,6 +36,11 @@
 						]
 					}
 				]
+			},
+			"section_id": {
+				"__TYPE__": "FieldContent",
+				"value": "could",
+				"type": "Text"
 			}
 		},
 		"items": []

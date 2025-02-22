@@ -118,6 +118,11 @@
 						]
 					}
 				]
+			},
+			"section_id": {
+				"__TYPE__": "FieldContent",
+				"value": "ride",
+				"type": "Text"
 			}
 		},
 		"items": []
