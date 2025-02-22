@@ -58,6 +58,24 @@
           "placeholder": ""
         }
       },
+      "resume_text": {
+        "type": "Text",
+        "config": {
+          "label": "Resume Text",
+          "placeholder": ""
+        }
+      },
+      "resume_link": {
+        "type": "Link",
+        "config": {
+          "label": "Resume Link",
+          "placeholder": "",
+          "select": null,
+          "allowTargetBlank": true,
+          "allowText": true,
+          "repeat": false
+        }
+      },
       "linkedin_link": {
         "type": "Link",
         "config": {

@@ -1,0 +1,125 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "FieldContent",
+				"value": "properly",
+				"type": "Text"
+			},
+			"decsription": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Quis tempor magna magna ipsum ut sint ullamco proident veniam veniam nisi et."
+						}
+					}
+				]
+			},
+			"project": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"project_name",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "important",
+									"type": "Text"
+								}
+							],
+							[
+								"project_link",
+								{
+									"key": "7940d2e4-4ec9-4194-8de8-a809dd7b58e5",
+									"__TYPE__": "LinkContent",
+									"value": {
+										"__TYPE__": "ExternalLink",
+										"url": "https://slicemachine.dev",
+										"text": "doll"
+									}
+								}
+							],
+							[
+								"project_image",
+								{
+									"origin": {
+										"id": "main",
+										"url": "https://images.unsplash.com/photo-1600804931749-2da4ce26c869",
+										"width": 3199,
+										"height": 3199
+									},
+									"url": "https://images.unsplash.com/photo-1600804931749-2da4ce26c869",
+									"width": 3199,
+									"height": 3199,
+									"edit": {
+										"zoom": 1,
+										"crop": {
+											"x": 0,
+											"y": 0
+										},
+										"background": "transparent"
+									},
+									"credits": null,
+									"alt": null,
+									"__TYPE__": "ImageContent",
+									"thumbnails": {}
+								}
+							],
+							[
+								"project_description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Consequat nisi eu labore. Pariatur tempor non Lorem eiusmod consequat dolor consequat est amet sunt sint voluptate veniam. Anim deserunt ex incididunt."
+											}
+										}
+									]
+								}
+							],
+							[
+								"project_expanded_description",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Lorem et culpa non et sunt ut eiusmod culpa. Culpa irure excepteur dolor pariatur sint excepteur cillum enim eu."
+											}
+										}
+									]
+								}
+							],
+							[
+								"project_date",
+								{
+									"__TYPE__": "FieldContent",
+									"type": "Date",
+									"value": "2013-11-14"
+								}
+							],
+							[
+								"project_end_date",
+								{
+									"__TYPE__": "FieldContent",
+									"type": "Date",
+									"value": "2015-01-19"
+								}
+							]
+						]
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]
