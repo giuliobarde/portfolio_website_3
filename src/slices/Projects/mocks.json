@@ -85,8 +85,8 @@
 							[
 								"project_link",
 								{
-									"__TYPE__": "LinkContent",
 									"key": "4e161df2-0957-47ca-a2ec-d6d88332c569",
+									"__TYPE__": "LinkContent",
 									"value": {
 										"__TYPE__": "ExternalLink",
 										"url": "https://prismic.io",
@@ -97,7 +97,6 @@
 							[
 								"project_image",
 								{
-									"__TYPE__": "ImageContent",
 									"origin": {
 										"id": "main",
 										"url": "https://images.unsplash.com/photo-1587614295999-6c1c13675117",
@@ -115,7 +114,24 @@
 										},
 										"background": "transparent"
 									},
+									"credits": null,
+									"alt": null,
+									"__TYPE__": "ImageContent",
 									"thumbnails": {}
+								}
+							],
+							[
+								"tech_stack",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "Elit occaecat sit qui excepteur velit incididunt Lorem ullamco id ad. Anim excepteur est qui laboris nostrud sit aute dolor sunt aliquip est aute reprehenderit."
+											}
+										}
+									]
 								}
 							]
 						]

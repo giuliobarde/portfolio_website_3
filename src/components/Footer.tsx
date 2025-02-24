@@ -31,6 +31,15 @@ export default async function Footer() {
           <p className=" text-sm text-slate-300 ">
             © {new Date().getFullYear()} {settings.data.name}
           </p>
+          <span
+            className="hidden text-5xl font-extralight leading-[0] text-slate-400 sm:inline"
+            aria-hidden={true}
+          >
+            /
+          </span>
+          <p className=" text-sm text-slate-300 ">
+            {settings.data.version}
+          </p>
         </div>
         <nav className="navigation" aria-label="Footer Navigation">
           <ul className="flex items-center gap-1">

@@ -62,7 +62,7 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
                   <img
                     src={item.project_image.url}
                     alt={item.project_image.alt ?? "Project Image"}
-                    className="w-32 h-32 object-cover rounded-full border-4 border-yellow-300"
+                    className="w-full h-full object-cover border-4 rounded-lg border-yellow-300"
                   />
                 )}
 

@@ -97,6 +97,13 @@
           "allowText": true,
           "repeat": false
         }
+      },
+      "version": {
+        "type": "Text",
+        "config": {
+          "label": "version",
+          "placeholder": ""
+        }
       }
     },
     "SEO and Metadata": {

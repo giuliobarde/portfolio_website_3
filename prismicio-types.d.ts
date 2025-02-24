@@ -354,7 +354,18 @@ interface SettingsDocumentData {
     unknown,
     prismic.FieldState,
     never
-  > /**
+  >;
+
+  /**
+   * version field in *Settings*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: settings.version
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  version: prismic.KeyTextField /**
    * Meta Title field in *Settings*
    *
    * - **Field Type**: Text
@@ -625,6 +636,16 @@ export interface ProjectsSliceDefaultPrimaryProjectsItem {
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   project_expanded_description: prismic.RichTextField;
+
+  /**
+   * Tech Stack field in *Projects → Default → Primary → Projects*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: projects.default.primary.projects[].tech_stack
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  tech_stack: prismic.RichTextField;
 
   /**
    * Project Link field in *Projects → Default → Primary → Projects*
