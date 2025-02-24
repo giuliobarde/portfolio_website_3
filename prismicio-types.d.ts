@@ -573,65 +573,65 @@ type HeroSliceVariation = HeroSliceDefault;
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
- * Item in *Projects → Default → Primary → Project*
+ * Item in *Projects → Default → Primary → Projects*
  */
-export interface ProjectsSliceDefaultPrimaryProjectItem {
+export interface ProjectsSliceDefaultPrimaryProjectsItem {
   /**
-   * Project Name field in *Projects → Default → Primary → Project*
+   * Project Name field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_name
+   * - **API ID Path**: projects.default.primary.projects[].project_name
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   project_name: prismic.KeyTextField;
 
   /**
-   * Project Start Date field in *Projects → Default → Primary → Project*
+   * Project Start Date field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Date
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_date
+   * - **API ID Path**: projects.default.primary.projects[].project_date
    * - **Documentation**: https://prismic.io/docs/field#date
    */
   project_date: prismic.DateField;
 
   /**
-   * Project End Date field in *Projects → Default → Primary → Project*
+   * Project End Date field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Date
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_end_date
+   * - **API ID Path**: projects.default.primary.projects[].project_end_date
    * - **Documentation**: https://prismic.io/docs/field#date
    */
   project_end_date: prismic.DateField;
 
   /**
-   * Project Description field in *Projects → Default → Primary → Project*
+   * Project Description field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_description
+   * - **API ID Path**: projects.default.primary.projects[].project_description
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   project_description: prismic.RichTextField;
 
   /**
-   * Project Expanded Description field in *Projects → Default → Primary → Project*
+   * Project Expanded Description field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_expanded_description
+   * - **API ID Path**: projects.default.primary.projects[].project_expanded_description
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   project_expanded_description: prismic.RichTextField;
 
   /**
-   * Project Link field in *Projects → Default → Primary → Project*
+   * Project Link field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Link
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_link
+   * - **API ID Path**: projects.default.primary.projects[].project_link
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
   project_link: prismic.LinkField<
@@ -643,11 +643,11 @@ export interface ProjectsSliceDefaultPrimaryProjectItem {
   >;
 
   /**
-   * Project Image field in *Projects → Default → Primary → Project*
+   * Project Image field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[].project_image
+   * - **API ID Path**: projects.default.primary.projects[].project_image
    * - **Documentation**: https://prismic.io/docs/field#image
    */
   project_image: prismic.ImageField<never>;
@@ -688,14 +688,16 @@ export interface ProjectsSliceDefaultPrimary {
   decsription: prismic.RichTextField;
 
   /**
-   * Project field in *Projects → Default → Primary*
+   * Projects field in *Projects → Default → Primary*
    *
    * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.project[]
+   * - **API ID Path**: projects.default.primary.projects[]
    * - **Documentation**: https://prismic.io/docs/field#group
    */
-  project: prismic.GroupField<Simplify<ProjectsSliceDefaultPrimaryProjectItem>>;
+  projects: prismic.GroupField<
+    Simplify<ProjectsSliceDefaultPrimaryProjectsItem>
+  >;
 }
 
 /**
@@ -860,7 +862,7 @@ declare module "@prismicio/client" {
       HeroSliceVariation,
       HeroSliceDefault,
       ProjectsSlice,
-      ProjectsSliceDefaultPrimaryProjectItem,
+      ProjectsSliceDefaultPrimaryProjectsItem,
       ProjectsSliceDefaultPrimary,
       ProjectsSliceVariation,
       ProjectsSliceDefault,
