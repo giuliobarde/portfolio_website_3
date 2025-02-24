@@ -5,17 +5,12 @@ import { Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
 
 type ProjectCardProps = {
-  projectList?: Content.ProjectsSliceDefaultPrimaryProjectsItem[]; // Optional to prevent errors
+  projectList?: Content.ProjectsSliceDefaultPrimaryProjectsItem[];
 };
 
 const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemCount = projectList.length || 1; // prevent division by zero
-  const angle = 360 / itemCount;
-  const radius = 250; // Adjust the radius as needed
-
-  // Calculate the overall rotation based on the current index
-  const rotateY = currentIndex * -angle;
+  const itemCount = projectList.length || 1;
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + itemCount) % itemCount);
@@ -26,52 +21,43 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
   };
 
   return (
-    <div className="relative w-full h-96 flex items-center justify-center">
-      {/* Navigation Controls with higher z-index */}
-      <div className="absolute inset-0 flex items-center justify-between px-4 z-20">
+    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-gray-900">
+      {/* Navigation Controls */}
+      <div className="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-between px-8 z-30">
         <button
           onClick={handlePrev}
-          className="bg-gray-800 text-white p-2 rounded-full focus:outline-none"
+          className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none"
         >
           Prev
         </button>
         <button
           onClick={handleNext}
-          className="bg-gray-800 text-white p-2 rounded-full focus:outline-none"
+          className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none"
         >
           Next
         </button>
       </div>
 
-      {/* Carousel Container with Perspective */}
-      <div
-        className="w-full h-full relative"
-        style={{
-          perspective: "1000px",
-        }}
-      >
-        {/* Carousel Inner: rotates based on current index */}
-        <div
-          className="absolute w-full h-full transition-transform duration-1000"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: `translateZ(-${radius}px) rotateY(${rotateY}deg)`,
-            pointerEvents: "none", // disable pointer events here so they don't block buttons
-          }}
-        >
-          {projectList.map((item, index) => {
-            // Each card is rotated around the Y-axis and translated forward
-            const itemAngle = index * angle;
-            return (
-              <div
-                key={index}
-                className="absolute w-64 h-80 bg-gray-700 text-white border-slate-900 rounded-lg shadow-lg overflow-hidden flex flex-col items-center p-6"
-                style={{
-                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
-                  pointerEvents: "auto", // re-enable pointer events on each card if needed
-                }}
-              >
-                {/* Show Image Only If Available */}
+      {/* Card Container with perspective */}
+      <div className="relative w-full h-[600px] flex items-center justify-center" style={{ perspective: "1000px" }}>
+        {projectList.map((item, index) => {
+          // Only the active card is rotated into view
+          const isActive = index === currentIndex;
+          return (
+            <div
+              key={index}
+              className="absolute transition-transform duration-1000"
+              style={{
+                width: "256px",
+                height: "320px",
+                // When active, the card is facing forward (0deg). When inactive, it spins (e.g., to 90deg)
+                transform: isActive ? "rotateY(0deg)" : "rotateY(90deg)",
+                transformStyle: "preserve-3d",
+                backfaceVisibility: "hidden",
+              }}
+            >
+              <div className="w-full h-full bg-gray-700 text-white rounded-lg shadow-lg flex flex-col items-center p-6">
+                {/* Project Image */}
                 {item.project_image?.url && (
                   <img
                     src={item.project_image.url}
@@ -80,23 +66,21 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
                   />
                 )}
 
-                {/* Show Name If Available */}
+                {/* Project Name */}
                 {item.project_name && (
-                  <h3 className="text-xl font-bold mt-4">
-                    {item.project_name}
-                  </h3>
+                  <h3 className="text-xl font-bold mt-4">{item.project_name}</h3>
                 )}
 
-                {/* Show Description If Available */}
+                {/* Project Description */}
                 {item.project_description && (
                   <div className="text-sm text-gray-300 text-center mt-2">
                     <PrismicRichText field={item.project_description} />
                   </div>
                 )}
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
