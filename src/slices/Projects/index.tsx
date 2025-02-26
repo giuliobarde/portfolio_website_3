@@ -18,18 +18,18 @@ const Projects: FC<ProjectsProps> = ({ slice }) => {
 
   return (
     <Bounded>
-      {/* Full-Screen Centered Layout */}
-      <div className="flex flex-col items-center justify-center h-screen w-full">
+      {/* Remove full-screen height constraint */}
+      <div className="flex flex-col items-center justify-center w-full">
         {/* Title & Description */}
-        <div className="w-full max-w-4xl text-center space-y-6 mb-8">
+        <div className="w-full max-w-4xl text-center space-y-4 mb-4"> {/* Reduced mb-8 to mb-4 */}
           <Heading as="h2" size="lg">{slice.primary.heading}</Heading>
           <div className="prose prose-xl prose-slate prose-invert mx-auto">
             <PrismicRichText field={slice.primary.decsription} />
           </div>
         </div>
 
-        {/* Full-Screen Centered Carousel */}
-        <div className="w-full h-[600px] flex justify-center">
+        {/* Adjust card container */}
+        <div className="w-full flex justify-center">
           <ProjectCards projectList={projectList} />
         </div>
       </div>
