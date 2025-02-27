@@ -30,7 +30,7 @@ type ProjectModalProps = {
             className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
             onClick={handleOutsideClick}
         >
-            <div className="bg-slate-700 p-8 rounded-lg shadow-lg max-w-xl w-full relative max-h-[80vh] sm:max-h-[90vh] overflow-scroll">
+            <div className="bg-slate-700 p-8 rounded-lg shadow-lg max-w-[90vw] sm:max-w-xl relative max-h-[80vh] sm:max-h-[90vh] overflow-scroll">
                 {/* Close Button */}
                 <button
                     onClick={onClose}
