@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicRichText } from "@prismicio/react";
+import ProjectModal from "@/components/ProjectModal";
 
 type ProjectCardProps = {
   projectList?: Content.ProjectsSliceDefaultPrimaryProjectsItem[];
@@ -11,6 +12,7 @@ type ProjectCardProps = {
 const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemCount = projectList.length || 1;
+  const [selectedProject, setSelectedProject] = useState<Content.ProjectsSliceDefaultPrimaryProjectsItem | null>(null);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + itemCount) % itemCount);
@@ -20,17 +22,24 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
     setCurrentIndex((prev) => (prev + 1) % itemCount);
   };
 
+  const openModal = (item: Content.ProjectsSliceDefaultPrimaryProjectsItem) => {
+    setSelectedProject(item);
+  };
+
+  const closeModal = () => {
+    setSelectedProject(null);
+  };
+
   return (
     <div className="relative w-full flex flex-col items-center justify-center bg-transparent">
-      {/* Card Container with perspective */}
+      {/* Card Container */}
       <div className="relative w-full max-w-md h-[400px] flex items-center justify-center" style={{ perspective: "1000px" }}>
         {projectList.map((item, index) => {
-          // Only the active card is visible
           const isActive = index === currentIndex;
           return (
             <div
               key={index}
-              className={`absolute transition-transform duration-700 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              className={`absolute transition-transform duration-700 ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}
               style={{
                 width: "256px",
                 height: "320px",
@@ -38,7 +47,10 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
                 backfaceVisibility: "hidden",
               }}
             >
-              <div className="w-full h-full bg-slate-700 text-white rounded-lg shadow-lg flex flex-col items-center p-6">
+              <div 
+                className="w-full h-full bg-slate-700 text-white rounded-lg shadow-lg flex flex-col items-center p-6 cursor-pointer"
+                onClick={() => openModal(item)}
+              >
                 {/* Project Image */}
                 {item.project_image?.url && (
                   <img
@@ -65,7 +77,7 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
         })}
       </div>
 
-      {/* Navigation Controls BELOW the Card */}
+      {/* Navigation Controls */}
       <div className="flex justify-between gap-4 mt-4">
         <button
           onClick={handlePrev}
@@ -80,6 +92,9 @@ const ProjectCards: React.FC<ProjectCardProps> = ({ projectList = [] }) => {
           Next
         </button>
       </div>
+
+      {/* Project Modal */}
+      {selectedProject && <ProjectModal project={selectedProject} onClose={closeModal} />}
     </div>
   );
 };
