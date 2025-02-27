@@ -85,13 +85,19 @@
 							[
 								"project_link",
 								{
-									"key": "4e161df2-0957-47ca-a2ec-d6d88332c569",
-									"__TYPE__": "LinkContent",
-									"value": {
-										"__TYPE__": "ExternalLink",
-										"url": "https://prismic.io",
-										"text": "mirror"
-									}
+									"__TYPE__": "RepeatableContent",
+									"type": "Link",
+									"value": [
+										{
+											"__TYPE__": "LinkContent",
+											"key": "c3872cda-8a0c-4348-8550-be1c955ecc46",
+											"value": {
+												"__TYPE__": "ExternalLink",
+												"url": "http://twitter.com",
+												"text": "magic"
+											}
+										}
+									]
 								}
 							],
 							[

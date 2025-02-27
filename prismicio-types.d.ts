@@ -648,22 +648,6 @@ export interface ProjectsSliceDefaultPrimaryProjectsItem {
   tech_stack: prismic.RichTextField;
 
   /**
-   * Project Link field in *Projects → Default → Primary → Projects*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: projects.default.primary.projects[].project_link
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  project_link: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-
-  /**
    * Project Image field in *Projects → Default → Primary → Projects*
    *
    * - **Field Type**: Image
@@ -672,6 +656,18 @@ export interface ProjectsSliceDefaultPrimaryProjectsItem {
    * - **Documentation**: https://prismic.io/docs/field#image
    */
   project_image: prismic.ImageField<never>;
+
+  /**
+   * Project Link field in *Projects → Default → Primary → Projects*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: projects.default.primary.projects[].project_link
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  project_link: prismic.Repeatable<
+    prismic.LinkField<string, string, unknown, prismic.FieldState, never>
+  >;
 }
 
 /**

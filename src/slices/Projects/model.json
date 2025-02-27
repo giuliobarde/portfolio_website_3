@@ -89,6 +89,14 @@
                   "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
                 }
               },
+              "project_image": {
+                "type": "Image",
+                "config": {
+                  "label": "Project Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
               "project_link": {
                 "type": "Link",
                 "config": {
@@ -97,15 +105,7 @@
                   "select": null,
                   "allowTargetBlank": true,
                   "allowText": true,
-                  "repeat": false
-                }
-              },
-              "project_image": {
-                "type": "Image",
-                "config": {
-                  "label": "Project Image",
-                  "constraint": {},
-                  "thumbnails": []
+                  "repeat": true
                 }
               }
             }
