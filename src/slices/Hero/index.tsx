@@ -18,6 +18,9 @@ export type HeroProps = SliceComponentProps<Content.HeroSlice>;
  */
 const Hero: FC<HeroProps> = ({ slice }) => {
   const component = useRef(null);
+  // Strip # from section_id if present (HTML IDs shouldn't include #)
+  const rawSectionId = slice.primary.section_id || "hero";
+  const sectionId = typeof rawSectionId === 'string' ? rawSectionId.replace(/^#+/, '') : rawSectionId;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -87,6 +90,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
 
   return (
     <Bounded
+      id={sectionId}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       ref={component}

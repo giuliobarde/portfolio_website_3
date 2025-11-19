@@ -46,8 +46,12 @@ const TechList: React.FC<{ slice: TechListSliceProps }> = ({ slice }) => {
     };
   }, []);
 
+  // Strip # from section_id if present (HTML IDs shouldn't include #)
+  const rawSectionId = slice.primary.section_id || "skills";
+  const sectionId = typeof rawSectionId === 'string' ? rawSectionId.replace(/^#+/, '') : rawSectionId;
+  
   return (
-    <Bounded>
+    <Bounded id={sectionId}>
       <div className="grid gap-x-8 gap-y-6 md:grid-cols-2 items-center">
         {/* Left Column - Heading, Text */}
         <div className="flex flex-col space-y-6">

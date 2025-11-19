@@ -15,8 +15,13 @@ export type BiographyProps = SliceComponentProps<Content.BiographySlice>;
  * Component for "Biography" Slices.
  */
 const Biography: FC<BiographyProps> = ({ slice }) => {
+  // Strip # from section_id if present (HTML IDs shouldn't include #)
+  const rawSectionId = slice.primary.section_id || "about_me";
+  const sectionId = typeof rawSectionId === 'string' ? rawSectionId.replace(/^#+/, '') : rawSectionId;
+  
   return (
     <Bounded
+      id={sectionId}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >

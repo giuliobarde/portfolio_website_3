@@ -15,9 +15,12 @@ export type ProjectsProps = SliceComponentProps<Content.ProjectsSlice>;
  */
 const Projects: FC<ProjectsProps> = ({ slice }) => {
   const projectList = slice.primary.projects;
+  // Strip # from section_id if present (HTML IDs shouldn't include #)
+  const rawSectionId = slice.primary.section_id || "projects";
+  const sectionId = typeof rawSectionId === 'string' ? rawSectionId.replace(/^#+/, '') : rawSectionId;
 
   return (
-    <Bounded>
+    <Bounded id={sectionId}>
       {/* Remove full-screen height constraint */}
       <div className="flex flex-col items-center justify-center w-full">
         {/* Title & Description */}
