@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
@@ -8,11 +8,16 @@ import { PrismicRichText } from "@prismicio/react";
 import type { RichTextField } from "@prismicio/client";
 import { sectionHeaderVariants } from "@/lib/animations";
 import WorkExperienceModal from "@/components/v4/WorkExperienceModal";
+import CertificationModal from "@/components/v4/CertificationModal";
+import { PrismicNextLink } from "@prismicio/next";
+import { isFilled } from "@prismicio/client";
 import {
   type EducationItem,
   type WorkItem,
+  type CertificationItem,
   getStableNow,
   parseDateTs,
+  formatDate,
   formatDuration,
   getTimelineRange,
   generateTimeMarkers,
@@ -56,7 +61,20 @@ export interface BranchingTimelineProps {
   description?: RichTextField;
   educationItems: EducationItem[];
   workItems: WorkItem[];
+  certificationItems?: CertificationItem[];
 }
+
+const CERT_KIND_LABEL: Record<string, string> = {
+  certification: "CERT",
+  award: "AWARD",
+  event: "EVENT",
+};
+
+const certTerminalSuffix = (kind?: string | null) => {
+  if (kind === "award") return ".award";
+  if (kind === "event") return ".event";
+  return ".cert";
+};
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -68,6 +86,7 @@ export default function BranchingTimeline({
   description,
   educationItems,
   workItems,
+  certificationItems = [],
 }: BranchingTimelineProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const pinContainerRef = useRef<HTMLDivElement>(null);
@@ -89,8 +108,19 @@ export default function BranchingTimeline({
   const workCardConnectorRef = useRef<HTMLDivElement>(null);
   const workJobEntryRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  // Certification refs
+  const certDotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const setCertDotRef = useCallback((el: HTMLDivElement | null, i: number) => {
+    certDotRefs.current[i] = el;
+  }, []);
+  const certChipRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const setCertChipRef = useCallback((el: HTMLDivElement | null, i: number) => {
+    certChipRefs.current[i] = el;
+  }, []);
+
   const [isMobile, setIsMobile] = useState(false);
   const [selectedWorkIndex, setSelectedWorkIndex] = useState<number | null>(null);
+  const [selectedCertIndex, setSelectedCertIndex] = useState<number | null>(null);
 
   // Education ref setters
   const setEduCardRef = useCallback((el: HTMLDivElement | null, i: number) => {
@@ -146,7 +176,12 @@ export default function BranchingTimeline({
 
   /* ---- Precompute timeline layout ---- */
   const timelineData = useMemo(() => {
-    if (educationItems.length === 0 && workItems.length === 0) return null;
+    if (
+      educationItems.length === 0 &&
+      workItems.length === 0 &&
+      certificationItems.length === 0
+    )
+      return null;
     const now = getStableNow();
     const allEntries = [
       ...educationItems.map((e) => ({
@@ -157,6 +192,10 @@ export default function BranchingTimeline({
         start_date: w.start_date,
         end_date: w.end_date,
       })),
+      ...certificationItems.map((c) => ({
+        start_date: c.date_issued,
+        end_date: c.date_issued,
+      })),
     ];
     const range = getTimelineRange(allEntries, now);
     const markers = generateTimeMarkers(range);
@@ -165,6 +204,27 @@ export default function BranchingTimeline({
 
     const eduPositions = computePositions(educationItems, range, now);
     const workPeriods = computeWorkPeriods(workItems, range, now);
+    const certPositions = computePositions(
+      certificationItems.map((c) => ({
+        start_date: c.date_issued,
+        end_date: c.date_issued,
+      })),
+      range,
+      now,
+    );
+
+    // Y offset (px) for each cert chip — stack vertically when chips collide horizontally
+    const certChipYOffsets: number[] = [];
+    certPositions.forEach((pos, i) => {
+      let offset = 0;
+      for (let j = 0; j < i; j++) {
+        if (Math.abs(pos.startPct - certPositions[j].startPct) < 4) {
+          const candidate = certChipYOffsets[j] - 32;
+          if (candidate < offset) offset = candidate;
+        }
+      }
+      certChipYOffsets.push(offset);
+    });
 
     // Flatten all individual jobs with their positions for the card
     const allJobs = workPeriods.flatMap((p) => p.activeJobs);
@@ -177,8 +237,19 @@ export default function BranchingTimeline({
       })),
     );
 
-    return { range, markers, eduPositions, workPeriods, allJobs, jobDotInfo, totalMonths, now };
-  }, [educationItems, workItems]);
+    return {
+      range,
+      markers,
+      eduPositions,
+      workPeriods,
+      allJobs,
+      jobDotInfo,
+      certPositions,
+      certChipYOffsets,
+      totalMonths,
+      now,
+    };
+  }, [educationItems, workItems, certificationItems]);
 
   /* ---- Content width in vw ---- */
   const contentWidthVW = useMemo(() => {
@@ -658,6 +729,68 @@ export default function BranchingTimeline({
             );
           }
         });
+
+        /* ---- Certification dots (point-in-time, on main line) ---- */
+        timelineData.certPositions.forEach((pos, cIdx) => {
+          const dot = certDotRefs.current[cIdx];
+          if (!dot) return;
+          const dotFrac = pos.startPct / 100;
+
+          gsap.set(dot, { scale: 0, opacity: 0 });
+
+          gsap.to(dot, {
+            scale: 1,
+            opacity: 1,
+            ease: "back.out(2)",
+            scrollTrigger: {
+              trigger: section,
+              start: `top+=${scrollEnd * Math.max(0, dotFrac - 0.02)} top`,
+              end: `top+=${scrollEnd * dotFrac} top`,
+              scrub: 0.5,
+            },
+          });
+
+          const pulse = dot.querySelector(".cert-dot-pulse");
+          if (pulse) {
+            gsap.fromTo(
+              pulse,
+              { scale: 0.5, opacity: 1 },
+              {
+                scale: 3,
+                opacity: 0,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: section,
+                  start: `top+=${scrollEnd * dotFrac} top`,
+                  end: `top+=${scrollEnd * (dotFrac + 0.04)} top`,
+                  scrub: 0.5,
+                },
+              },
+            );
+          }
+        });
+
+        /* ---- Certification chips (always-visible labels above main line) ---- */
+        timelineData.certPositions.forEach((pos, cIdx) => {
+          const chip = certChipRefs.current[cIdx];
+          if (!chip) return;
+          const dotFrac = pos.startPct / 100;
+
+          gsap.set(chip, { scale: 0.7, opacity: 0, y: 6 });
+
+          gsap.to(chip, {
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: `top+=${scrollEnd * Math.max(0, dotFrac - 0.025)} top`,
+              end: `top+=${scrollEnd * (dotFrac + 0.005)} top`,
+              scrub: 0.5,
+            },
+          });
+        });
       }, sectionRef);
 
       gsapCtxRef.current = ctx;
@@ -668,7 +801,7 @@ export default function BranchingTimeline({
       gsapCtxRef.current?.revert();
       gsapCtxRef.current = null;
     };
-  }, [isMobile, educationItems.length, workItems.length, timelineData, contentWidthVW]);
+  }, [isMobile, educationItems.length, workItems.length, certificationItems.length, timelineData, contentWidthVW]);
 
   /* ---- Helpers ---- */
   const parseCoursework = (coursework?: string): string[] => {
@@ -682,10 +815,12 @@ export default function BranchingTimeline({
   // Mobile: merge + sort all entries chronologically (most recent first)
   const allEntries = useMemo(() => {
     const entries: Array<{
-      type: "education" | "work";
+      type: "education" | "work" | "certification";
       sortTs: number;
       education?: EducationItem;
       work?: WorkItem;
+      certification?: CertificationItem;
+      certIndex?: number;
     }> = [];
     for (const edu of educationItems) {
       const ts = parseDateTs(edu.start_date) ?? 0;
@@ -695,8 +830,17 @@ export default function BranchingTimeline({
       const ts = parseDateTs(work.start_date) ?? 0;
       entries.push({ type: "work", sortTs: ts, work });
     }
+    certificationItems.forEach((cert, idx) => {
+      const ts = parseDateTs(cert.date_issued) ?? 0;
+      entries.push({
+        type: "certification",
+        sortTs: ts,
+        certification: cert,
+        certIndex: idx,
+      });
+    });
     return entries.sort((a, b) => b.sortTs - a.sortTs);
-  }, [educationItems, workItems]);
+  }, [educationItems, workItems, certificationItems]);
 
   /* ================================================================ */
   /*  Desktop: Immersive two-track branching timeline                   */
@@ -968,6 +1112,83 @@ export default function BranchingTimeline({
                     </div>
                   );
                 })}
+
+                {/* Certification / Award — point-in-time on main line, always-visible chip above */}
+                {certificationItems.map((cert, cIdx) => {
+                  const pos = timelineData.certPositions[cIdx];
+                  if (!pos) return null;
+                  const chipYOffset =
+                    timelineData.certChipYOffsets[cIdx] ?? 0;
+                  const kindLabel =
+                    CERT_KIND_LABEL[cert.kind || "certification"] || "CERT";
+                  // Distance (px) from chip bottom edge to dot center, used for connector height
+                  const connectorHeight = 22 + Math.abs(chipYOffset);
+                  return (
+                    <React.Fragment key={`cert-${cIdx}`}>
+                      {/* Always-visible chip above the dot (with connector line) */}
+                      <div
+                        ref={(el) => setCertChipRef(el, cIdx)}
+                        className="absolute z-20 opacity-0 pointer-events-auto cursor-pointer"
+                        style={{
+                          left: `${pos.startPct}%`,
+                          top: `${-22 + chipYOffset}px`,
+                          transform: "translate(-50%, -100%)",
+                        }}
+                        onClick={() => setSelectedCertIndex(cIdx)}
+                      >
+                        <div
+                          className="px-2 py-1 rounded-md font-mono text-[10px] leading-tight border shadow-md whitespace-nowrap flex items-center gap-1.5 transition-colors hover:shadow-lg"
+                          style={{
+                            backgroundColor: "hsl(var(--card))",
+                            borderColor: "hsl(var(--neon-red) / 0.4)",
+                            color: "hsl(var(--foreground))",
+                          }}
+                        >
+                          <span
+                            className="font-mono text-[9px] font-semibold"
+                            style={{ color: "hsl(var(--neon-red))" }}
+                          >
+                            [{kindLabel}]
+                          </span>
+                          <span className="font-semibold max-w-[180px] truncate">
+                            {cert.title || "untitled"}
+                          </span>
+                          {cert.date_issued && (
+                            <span className="text-muted-foreground">
+                              · {formatDate(cert.date_issued)}
+                            </span>
+                          )}
+                        </div>
+                        {/* Vertical connector from chip down to dot */}
+                        <div
+                          className="absolute left-1/2 -translate-x-1/2 top-full w-px"
+                          style={{
+                            height: `${connectorHeight}px`,
+                            backgroundColor: "hsl(var(--neon-red) / 0.4)",
+                          }}
+                        />
+                      </div>
+                      {/* Dot — anchor on main timeline line */}
+                      <div
+                        ref={(el) => setCertDotRef(el, cIdx)}
+                        className="absolute w-3.5 h-3.5 rounded-full border-2 bg-background z-20 opacity-0 pointer-events-auto cursor-pointer"
+                        style={{
+                          borderColor: "hsl(var(--neon-red))",
+                          boxShadow: "0 0 8px 1px hsl(var(--neon-red) / 0.5)",
+                          left: `${pos.startPct}%`,
+                          top: 0,
+                          transform: "translate(-50%, -50%)",
+                        }}
+                        onClick={() => setSelectedCertIndex(cIdx)}
+                      >
+                        <div
+                          className="cert-dot-pulse absolute inset-[-6px] rounded-full"
+                          style={{ backgroundColor: "hsl(var(--neon-red) / 0.4)" }}
+                        />
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </div>
 
@@ -1228,6 +1449,18 @@ export default function BranchingTimeline({
             onNavigate={(index) => setSelectedWorkIndex(index)}
           />
         )}
+
+        {/* Certification Modal */}
+        {selectedCertIndex !== null &&
+          certificationItems[selectedCertIndex] && (
+            <CertificationModal
+              certification={certificationItems[selectedCertIndex]}
+              certifications={certificationItems}
+              currentIndex={selectedCertIndex}
+              onClose={() => setSelectedCertIndex(null)}
+              onNavigate={(index) => setSelectedCertIndex(index)}
+            />
+          )}
       </section>
     );
   }
@@ -1270,20 +1503,71 @@ export default function BranchingTimeline({
 
           <div className="space-y-10">
             {allEntries.map((entry, index) => {
-              const isEdu = entry.type === "education";
               const edu = entry.education;
               const work = entry.work;
+              const cert = entry.certification;
 
-              const title = isEdu ? edu?.degree : work?.position;
-              const subtitle = isEdu ? edu?.field_of_study : `@ ${work?.company}`;
-              const location = isEdu ? edu?.location : work?.location;
-              const startDate = isEdu ? edu?.start_date : work?.start_date;
-              const endDate = isEdu ? edu?.end_date : work?.end_date;
-              const duration = formatDuration(startDate, endDate);
+              const isEdu = entry.type === "education";
+              const isWork = entry.type === "work";
+              const isCert = entry.type === "certification";
+
+              const dotColorVar = isEdu
+                ? "hsl(var(--accent))"
+                : isCert
+                  ? "hsl(var(--neon-red))"
+                  : "hsl(var(--cyan))";
+              const accentColorVar = dotColorVar;
+
+              const title = isEdu
+                ? edu?.degree
+                : isCert
+                  ? cert?.title
+                  : work?.position;
+              const subtitle = isEdu
+                ? edu?.field_of_study
+                : isCert
+                  ? cert?.issuer
+                    ? `@ ${cert.issuer}`
+                    : undefined
+                  : `@ ${work?.company}`;
+              const location = isEdu
+                ? edu?.location
+                : isCert
+                  ? undefined
+                  : work?.location;
+              const duration = isCert
+                ? cert?.date_issued
+                  ? `issued ${formatDate(cert.date_issued)}${
+                      cert.date_expires
+                        ? ` · expires ${formatDate(cert.date_expires)}`
+                        : ""
+                    }`
+                  : ""
+                : formatDuration(
+                    isEdu ? edu?.start_date : work?.start_date,
+                    isEdu ? edu?.end_date : work?.end_date,
+                  );
               const slug = isEdu
                 ? edu?.school?.toLowerCase().replace(/\s+/g, "-") || "university"
-                : work?.company?.toLowerCase().replace(/\s+/g, "-") || "company";
-              const terminalSuffix = isEdu ? ".edu" : ".dev";
+                : isCert
+                  ? cert?.title?.toLowerCase().replace(/\s+/g, "-") ||
+                    "credential"
+                  : work?.company?.toLowerCase().replace(/\s+/g, "-") ||
+                    "company";
+              const terminalSuffix = isEdu
+                ? ".edu"
+                : isCert
+                  ? certTerminalSuffix(cert?.kind)
+                  : ".dev";
+              const badgeLabel = isEdu
+                ? "EDU"
+                : isCert
+                  ? CERT_KIND_LABEL[cert?.kind || "certification"] || "CERT"
+                  : "WORK";
+
+              const isClickable = isWork || isCert;
+              const credentialFilled =
+                isCert && isFilled.link(cert?.credential_url);
 
               return (
                 <motion.div
@@ -1297,18 +1581,36 @@ export default function BranchingTimeline({
                   <div
                     className="absolute left-[-25px] top-[10px] w-[11px] h-[11px] rounded-full border-2 bg-background z-10"
                     style={{
-                      borderColor: isEdu ? "hsl(var(--accent))" : "hsl(var(--cyan))",
+                      borderColor: dotColorVar,
+                      boxShadow: isCert
+                        ? "0 0 6px 1px hsl(var(--neon-red) / 0.5)"
+                        : undefined,
                     }}
                   />
 
                   <div
-                    className={`terminal-card overflow-hidden ${!isEdu ? "cursor-pointer hover:border-[hsl(var(--cyan)_/_0.4)] transition-colors" : ""}`}
+                    className={`terminal-card overflow-hidden ${
+                      isClickable ? "cursor-pointer transition-colors" : ""
+                    }`}
+                    style={
+                      isClickable
+                        ? {
+                            ["--hover-border" as string]: isCert
+                              ? "hsl(var(--neon-red) / 0.4)"
+                              : "hsl(var(--cyan) / 0.4)",
+                          }
+                        : undefined
+                    }
                     onClick={() => {
-                      if (!isEdu && work) {
+                      if (isWork && work) {
                         const workIdx = workItems.findIndex(
-                          (w) => w.company === work.company && w.position === work.position
+                          (w) =>
+                            w.company === work.company &&
+                            w.position === work.position,
                         );
                         if (workIdx !== -1) setSelectedWorkIndex(workIdx);
+                      } else if (isCert && entry.certIndex !== undefined) {
+                        setSelectedCertIndex(entry.certIndex);
                       }
                     }}
                   >
@@ -1318,7 +1620,7 @@ export default function BranchingTimeline({
                         <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            !isEdu && work?.is_current
+                            isWork && work?.is_current
                               ? "bg-green-500 animate-pulse"
                               : "bg-green-500/60"
                           }`}
@@ -1330,23 +1632,27 @@ export default function BranchingTimeline({
                       <span
                         className="ml-auto font-mono text-[9px] px-1.5 py-0.5 rounded"
                         style={{
-                          color: isEdu ? "hsl(var(--accent))" : "hsl(var(--cyan))",
-                          backgroundColor: isEdu ? "hsl(var(--accent) / 0.1)" : "hsl(var(--cyan) / 0.1)",
+                          color: accentColorVar,
+                          backgroundColor: isEdu
+                            ? "hsl(var(--accent) / 0.1)"
+                            : isCert
+                              ? "hsl(var(--neon-red) / 0.1)"
+                              : "hsl(var(--cyan) / 0.1)",
                         }}
                       >
-                        {isEdu ? "EDU" : "WORK"}
+                        {badgeLabel}
                       </span>
                     </div>
 
                     <div className="p-5 space-y-3">
                       <div>
-                        <h3 className="font-mono text-lg font-bold text-foreground">{title}</h3>
+                        <h3 className="font-mono text-lg font-bold text-foreground">
+                          {title}
+                        </h3>
                         {subtitle && (
                           <p
                             className="font-mono text-sm mt-0.5"
-                            style={{
-                              color: isEdu ? "hsl(var(--accent))" : "hsl(var(--cyan))",
-                            }}
+                            style={{ color: accentColorVar }}
                           >
                             {subtitle}
                           </p>
@@ -1406,7 +1712,7 @@ export default function BranchingTimeline({
                         </>
                       )}
 
-                      {!isEdu && work && (
+                      {isWork && work && (
                         <>
                           {hasRichText(work.description) && (
                             <div className="text-sm text-muted-foreground prose prose-sm dark:prose-invert max-w-none">
@@ -1436,6 +1742,44 @@ export default function BranchingTimeline({
                           )}
                         </>
                       )}
+
+                      {isCert && cert && (
+                        <>
+                          {hasRichText(cert.description) && (
+                            <div className="text-sm text-muted-foreground prose prose-sm dark:prose-invert max-w-none">
+                              <PrismicRichText field={cert.description} />
+                            </div>
+                          )}
+                          {credentialFilled && (
+                            <div onClick={(e) => e.stopPropagation()}>
+                              <PrismicNextLink
+                                field={cert.credential_url}
+                                className="group inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded border transition-colors"
+                                style={{
+                                  color: "hsl(var(--neon-red))",
+                                  backgroundColor: "hsl(var(--neon-red) / 0.08)",
+                                  borderColor: "hsl(var(--neon-red) / 0.3)",
+                                }}
+                              >
+                                <span>view credential</span>
+                                <svg
+                                  className="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                  />
+                                </svg>
+                              </PrismicNextLink>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -1453,6 +1797,17 @@ export default function BranchingTimeline({
           currentIndex={selectedWorkIndex}
           onClose={() => setSelectedWorkIndex(null)}
           onNavigate={(index) => setSelectedWorkIndex(index)}
+        />
+      )}
+
+      {/* Certification Modal */}
+      {selectedCertIndex !== null && certificationItems[selectedCertIndex] && (
+        <CertificationModal
+          certification={certificationItems[selectedCertIndex]}
+          certifications={certificationItems}
+          currentIndex={selectedCertIndex}
+          onClose={() => setSelectedCertIndex(null)}
+          onNavigate={(index) => setSelectedCertIndex(index)}
         />
       )}
     </section>

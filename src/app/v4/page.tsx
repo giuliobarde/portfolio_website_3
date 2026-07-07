@@ -6,21 +6,34 @@ import { createClient } from "@/prismicio";
 import { components } from "@/slices/v4";
 import type { RichTextField } from "@prismicio/client";
 import BranchingTimeline from "@/components/v4/sections/BranchingTimeline";
-import type { EducationItem, WorkItem } from "@/lib/timeline-utils";
+import type {
+  EducationItem,
+  WorkItem,
+  CertificationItem,
+} from "@/lib/timeline-utils";
 
-const TIMELINE_SLICE_TYPES = ["education", "work_experience"];
+const TIMELINE_SLICE_TYPES = [
+  "education",
+  "work_experience",
+  "certifications",
+];
 
 export default async function V4Page() {
   const client = createClient();
   const page = await client.getSingle("homepage");
   const slices = page.data.slices;
 
-  // Extract education + work experience slices for the unified timeline
+  // Extract education + work experience + certifications slices for the unified timeline
   const eduSlice = slices.find((s) => s.slice_type === "education") as
     | { primary: { section_id?: string; heading?: string; description?: RichTextField; educations?: EducationItem[] } }
     | undefined;
   const workSlice = slices.find((s) => s.slice_type === "work_experience") as
     | { primary: { experiences?: WorkItem[] } }
+    | undefined;
+  const certSlice = slices.find(
+    (s) => (s.slice_type as string) === "certifications",
+  ) as
+    | { primary: { certifications?: CertificationItem[] } }
     | undefined;
 
   // Find where the first timeline slice appears in the ordering
@@ -41,7 +54,8 @@ export default async function V4Page() {
 
   const hasTimelineData =
     (eduSlice?.primary?.educations?.length ?? 0) > 0 ||
-    (workSlice?.primary?.experiences?.length ?? 0) > 0;
+    (workSlice?.primary?.experiences?.length ?? 0) > 0 ||
+    (certSlice?.primary?.certifications?.length ?? 0) > 0;
 
   return (
     <div className="relative min-h-screen">
@@ -59,6 +73,7 @@ export default async function V4Page() {
             description={eduSlice?.primary?.description}
             educationItems={eduSlice?.primary?.educations || []}
             workItems={workSlice?.primary?.experiences || []}
+            certificationItems={certSlice?.primary?.certifications || []}
           />
         )}
 

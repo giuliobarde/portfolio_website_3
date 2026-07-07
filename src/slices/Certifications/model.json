@@ -1,0 +1,106 @@
+{
+  "id": "certifications",
+  "type": "SharedSlice",
+  "name": "Certifications",
+  "description": "Certifications, awards, and events (e.g. hackathons)",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "section_id": {
+          "type": "Text",
+          "config": {
+            "label": "Section ID",
+            "placeholder": "#certifications"
+          }
+        },
+        "heading": {
+          "type": "Text",
+          "config": {
+            "label": "Heading",
+            "placeholder": "Certifications & Awards"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        },
+        "certifications": {
+          "type": "Group",
+          "config": {
+            "label": "Certifications",
+            "repeat": true,
+            "fields": {
+              "title": {
+                "type": "Text",
+                "config": {
+                  "label": "Title",
+                  "placeholder": "e.g. AWS Certified Solutions Architect"
+                }
+              },
+              "issuer": {
+                "type": "Text",
+                "config": {
+                  "label": "Issuer",
+                  "placeholder": "e.g. Amazon Web Services"
+                }
+              },
+              "date_issued": {
+                "type": "Date",
+                "config": {
+                  "label": "Date Issued",
+                  "placeholder": ""
+                }
+              },
+              "date_expires": {
+                "type": "Date",
+                "config": {
+                  "label": "Date Expires",
+                  "placeholder": ""
+                }
+              },
+              "credential_url": {
+                "type": "Link",
+                "config": {
+                  "label": "Credential URL",
+                  "placeholder": "https://...",
+                  "select": null,
+                  "allowTargetBlank": true
+                }
+              },
+              "description": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Description",
+                  "placeholder": "Details about the certification, award, or event",
+                  "allowTargetBlank": true,
+                  "multi": "paragraph,strong,em,hyperlink,list-item,o-list-item"
+                }
+              },
+              "kind": {
+                "type": "Select",
+                "config": {
+                  "label": "Kind",
+                  "placeholder": "Select type",
+                  "options": ["certification", "award", "event"],
+                  "default_value": "certification"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

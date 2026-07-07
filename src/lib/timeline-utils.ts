@@ -1,4 +1,4 @@
-import type { RichTextField } from "@prismicio/client";
+import type { RichTextField, LinkField } from "@prismicio/client";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -27,6 +27,18 @@ export interface WorkItem {
   description?: RichTextField;
   achievements?: RichTextField;
   technologies?: string;
+}
+
+export type CertificationKind = "certification" | "award" | "event";
+
+export interface CertificationItem {
+  title?: string;
+  issuer?: string;
+  date_issued?: string;
+  date_expires?: string;
+  credential_url?: LinkField;
+  description?: RichTextField;
+  kind?: CertificationKind | null;
 }
 
 export interface TimelineRange {

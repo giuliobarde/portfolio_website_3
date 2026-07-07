@@ -17,6 +17,9 @@
             "education": {
               "type": "SharedSlice"
             },
+            "certifications": {
+              "type": "SharedSlice"
+            },
             "projects": {
               "type": "SharedSlice"
             },
