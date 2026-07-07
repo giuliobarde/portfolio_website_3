@@ -46,6 +46,8 @@ export default async function V4Layout({
   const resumeText = settings.data.resume_text || "Resume";
   const resumeUrl = settings.data.resume_link ? extractPrismicUrl(settings.data.resume_link) || undefined : undefined;
   const websiteVersions = settings.data.website_version?.map((v) => v.version).filter(Boolean) as string[] | undefined;
+  const githubUrl = settings.data.github_link ? extractPrismicUrl(settings.data.github_link) || undefined : undefined;
+  const linkedinUrl = settings.data.linkedin_link ? extractPrismicUrl(settings.data.linkedin_link) || undefined : undefined;
 
   return (
     <V4LayoutWrapper
@@ -55,6 +57,8 @@ export default async function V4Layout({
       resumeText={resumeText}
       resumeUrl={resumeUrl}
       websiteVersions={websiteVersions}
+      githubUrl={githubUrl}
+      linkedinUrl={linkedinUrl}
     >
       {children}
     </V4LayoutWrapper>

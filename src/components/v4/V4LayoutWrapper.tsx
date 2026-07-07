@@ -1,8 +1,10 @@
 "use client";
 
 import { JetBrains_Mono, Inter } from "next/font/google";
+import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "@/components/v4/ThemeProvider";
 import Navbar from "@/components/v4/Navbar";
+import Footer from "@/components/v4/Footer";
 import BackgroundEffects from "@/components/v4/BackgroundEffects";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -27,6 +29,8 @@ export default function V4LayoutWrapper({
   resumeText,
   resumeUrl,
   websiteVersions,
+  githubUrl,
+  linkedinUrl,
 }: {
   children: React.ReactNode;
   webIconUrl?: string;
@@ -35,6 +39,8 @@ export default function V4LayoutWrapper({
   resumeText?: string;
   resumeUrl?: string;
   websiteVersions?: string[];
+  githubUrl?: string;
+  linkedinUrl?: string;
 }) {
   return (
     <div
@@ -49,21 +55,12 @@ export default function V4LayoutWrapper({
         enableSystem
         disableTransitionOnChange={false}
       >
-        <BackgroundEffects />
-        <Navbar webIconUrl={webIconUrl} userName={userName} currentVersion={version} resumeText={resumeText} resumeUrl={resumeUrl} websiteVersions={websiteVersions} />
-        <main className="relative">{children}</main>
-
-        {/* Terminal-style footer */}
-        <footer className="border-t border-border/50 py-8 px-4">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="font-mono text-xs text-muted-foreground">
-              <span className="text-accent">$</span> echo &quot;Built with Next.js + Prismic&quot;
-            </p>
-            <p className="font-mono text-xs text-muted-foreground">
-              <span className="text-accent">&gt;</span> {new Date().getFullYear()} &mdash; All rights reserved
-            </p>
-          </div>
-        </footer>
+        <MotionConfig reducedMotion="user">
+          <BackgroundEffects />
+          <Navbar webIconUrl={webIconUrl} userName={userName} currentVersion={version} resumeText={resumeText} resumeUrl={resumeUrl} websiteVersions={websiteVersions} />
+          <main className="relative">{children}</main>
+          <Footer userName={userName} githubUrl={githubUrl} linkedinUrl={linkedinUrl} />
+        </MotionConfig>
 
         <Analytics />
         <SpeedInsights />
