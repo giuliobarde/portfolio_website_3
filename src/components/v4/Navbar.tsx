@@ -43,6 +43,10 @@ export default function Navbar({
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
+    // Clear the active pill when back in the hero, which has no nav item
+    if (latest < window.innerHeight * 0.5) {
+      setActiveSection("home");
+    }
   });
 
   // Track active section based on scroll position
