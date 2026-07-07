@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useSpring, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { VersionToggle } from "./VersionToggle";
@@ -34,7 +34,12 @@ export default function Navbar({
   const [activeSection, setActiveSection] = React.useState("home");
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isMobileOpen, setIsMobileOpen] = React.useState(false);
-  const { scrollY } = useScroll();
+  const { scrollY, scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 200,
+    damping: 40,
+    restDelta: 0.001,
+  });
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
@@ -272,6 +277,18 @@ export default function Navbar({
             </div>
           </div>
         </div>
+
+        {/* Scroll progress line */}
+        <motion.div
+          aria-hidden
+          style={{ scaleX: progress }}
+          className={cn(
+            "absolute bottom-0 left-0 right-0 h-[2px] origin-left",
+            "bg-gradient-to-r from-accent/60 via-accent to-[hsl(var(--cyan))]",
+            "shadow-[0_0_8px_hsl(var(--terminal)/0.4)] transition-opacity duration-500",
+            isScrolled ? "opacity-100" : "opacity-0"
+          )}
+        />
       </motion.nav>
 
       {/* Mobile Menu Overlay */}
