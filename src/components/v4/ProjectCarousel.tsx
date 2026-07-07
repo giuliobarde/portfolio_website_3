@@ -173,7 +173,7 @@ const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ projectList = [] }) =
   return (
     <div
       ref={carouselRef}
-      className="relative w-full flex flex-col items-center justify-center py-12 md:py-20"
+      className="relative w-full flex flex-col items-center justify-center py-6 md:py-10"
     >
       {/* Terminal status bar */}
       <div className="mb-6 font-mono text-xs text-muted-foreground flex items-center gap-2">
