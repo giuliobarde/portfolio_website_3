@@ -91,9 +91,11 @@ export async function generateMetadata(): Promise<Metadata> {
     client.getSingle("settings"),
   ]);
   const name = settings.data.name || "Portfolio";
+  const metaTitle = page.data.meta_title || name;
 
   return {
-    title: page.data.meta_title || name,
+    // Absolute title avoids "Name | Name" when meta_title matches the site name
+    title: metaTitle === name ? { absolute: name } : metaTitle,
     description: page.data.meta_description,
     openGraph: {
       title: isFilled.keyText(page.data.meta_title)
